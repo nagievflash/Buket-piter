@@ -1,0 +1,14 @@
+
+
+// Variables
+@import 'variables';
+@import 'flexbox';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import "node_modules/font-awesome/scss/font-awesome.scss";
+@import "selectize.scss";
+//main
+@import 'main';
+@import 'header';
+@import 'product-item';
