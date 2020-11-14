@@ -7,7 +7,8 @@ header {
                 display:inline-block;
                 margin-right:15px!important;
                 a {
-
+                    color: #6B6767;
+                    font-size:14px;
                 }
             }
         }
@@ -38,6 +39,7 @@ header {
                     border: 1px solid #b4a4ac;
                     padding: 10px 15px;
                     border-radius: 25px;
+                    font-size:14px;
                     &:after {
                         display: inline-block;
                         margin-left: 10px;
@@ -59,13 +61,21 @@ header {
         text-align: right;
         .phones {
             a {
-                font-weight:700;
-                margin-right: 25px;
+                font-weight:600;
+                margin-right: 40px;
+                font-size:16px;
+                &:last-child {
+                    margin-right:10px;
+                }
+            }
+            .phone-icon {
+                margin-right:20px;
+                vertical-align: top;
             }
         }
     }
     .main-menu {
-        background: linear-gradient(28deg, #8940e9 20.7%, #f85aaa 75.17%);
+        background: radial-gradient(100% 1000.17% at 28% 50.18%, #7B31DC 1.59%, #B34AD0 29.17%, #F24A7C 68.23%);
         padding:0px 15px;
         .navbar-dark {
             ul.navbar-nav {
