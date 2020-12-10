@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Product;
 
 class HomepageController extends Controller
 {
-
+    public $data;
 
     /**
      * Show the application dashboard.
@@ -15,6 +16,8 @@ class HomepageController extends Controller
      */
     public function index()
     {
-        return view('homepage');
+        $this->data = array();
+        $data['actions'] = Product::with('categories')->byCategoryName('Акции')->get();
+        return view('homepage')->with('data', $data);
     }
 }

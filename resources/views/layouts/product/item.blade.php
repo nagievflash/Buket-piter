@@ -2,14 +2,14 @@
 
 @section('content')
 
-    <div class="product-item">
+    <div class="product-item" data-id="{{$product->id}}">
         <div class="container-fluid">
             <div class="row">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/" title="Доставка цветов по Санкт-Петербургу">Доставка цветов по Санкт-Петербургу</a></li>
                         <li class="breadcrumb-item"><a href="#" title="Букеты | Доставка цветов по Санкт-Петербургу">Букеты</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Аромат прованса</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{$product->title}}</li>
                     </ol>
                 </nav>
             </div>
@@ -19,27 +19,23 @@
                         <div class="col-3 image-thumbnails">
                             <div class="row">
                                 <div id="gallery_01" class="d-flex flex-wrap justify-content-between">
-                                    <a href="#" class="active" data-image="/img/product/image 1.jpg" data-zoom-image="/img/product/image 1.jpg">
-                                        <img class="image-gallery" id="img_01" src="/img/product/image 1.jpg"/>
-                                    </a>
-
-                                    <a href="#" data-image="/img/product/image 2.jpg" data-zoom-image="/img/product/image 2.jpg">
-                                        <img class="image-gallery" id="" src="/img/product/image 2.jpg"/>
-                                    </a>
-
-                                    <a href="#" data-image="/img/product/image 3.jpg" data-zoom-image="/img/product/image 3.jpg">
-                                        <img class="image-gallery" id="" src="/img/product/image 3.jpg"/>
-                                    </a>
-
-                                    <a href="#" data-image="/img/product/image 4.jpg" data-zoom-image="/img/product/image 4.jpg">
-                                        <img class="image-gallery" id="" src="/img/product/image 4.jpg"/>
-                                    </a>
+                                    @foreach (json_decode($product->images, true) as $image)
+                                        @if ($loop->first)
+                                            <a href="#" class="active" data-image="{{ Voyager::image( $image ) }}" data-zoom-image="{{ Voyager::image( $image ) }}">
+                                                <img class="image-gallery" id="img_01" src="{{ Voyager::image( $image ) }}"/>
+                                            </a>
+                                        @else
+                                            <a href="#" data-image="{{ Voyager::image( $image ) }}" data-zoom-image="{{ Voyager::image( $image ) }}">
+                                                <img class="image-gallery" id="" src="{{ Voyager::image( $image ) }}"/>
+                                            </a>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                         <div class="col-9 image-fullsize">
                             <div class="image-gallery-wrapper">
-                                <img class="image-gallery" id="zoom_06"  src="/img/product/image 1.jpg" data-zoom-image="/img/product/image 1.jpg"/>
+                                <img class="image-gallery" id="zoom_06"  src="{{Voyager::image( json_decode($product->images, true)[0])}}" data-zoom-image="{{Voyager::image( json_decode($product->images, true)[0])}}"/>
                             </div>
                         </div>
                     </div>
@@ -75,8 +71,16 @@
                         <div class="product-content">
                             <div class="product-info">
                                 <p class="product-type">букет</p>
-                                <h1 class="product-title">Алые розы</h1>
-                                <p class="product-composition">роза россия; гортензия (гидрангия); манус; рубус; матиола; фрезия</p>
+                                <h1 class="product-title">{{$product->title}}</h1>
+                                <p class="product-composition">
+                                    @foreach($product->products()->get() as $item)
+                                        @if (!$loop->last)
+                                            {{$item->title}},
+                                        @else
+                                            {{$item->title}}
+                                        @endif
+                                    @endforeach
+                                </p>
                             </div>
                             <div class="product-action">
                                 <div class="product-price-block d-flex w-100 align-items-center justify-content-between">
@@ -86,7 +90,7 @@
                                         <span class="product-size">Большой</span>
                                     </div>
                                     <div class="product-price">
-                                        4 599 Р
+                                        {{number_format($product->price, 0, '', ' ')}} ₽
                                     </div>
                                 </div>
                                 <div class="product-actions w-100 d-flex">
@@ -96,7 +100,7 @@
                                                 <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
-                                        <input class="form-control quantity" min="0" name="quantity" value="1" type="number">
+                                        <input class="form-control quantity" min="1" name="quantity" value="1" type="number">
                                         <div class="input-group-append">
                                             <button class="btn btn-light btn-plus">
                                                 <i class="fa fa-plus"></i>
@@ -200,7 +204,7 @@
                 <div class="col-md-7 product-description">
                     <div class="row">
                         <h3>Описание</h3>
-                        <p>Доставка цветов по Санкт-Петербургу (СПБ), осуществляется круглосуточно по заказу с сайта или по телефону +7-812-309-38-84 в Петербурге. В Санкт-Петербурге недорогие цветы с доставкой стало возможно заказать довольно давно, но и сейчас только единицы могут обеспечить по-настоящему качественный сервис, свежесть растений и демократичную политику ценообразования. Мы понимаем, насколько важно заказчику, чтобы адресат вовремя получил букет, который будет в полной мере соответствовать его представлениям об идеале, и сможет приносить радость, благоухая в вазе на протяжении многих дней, поэтому доставляем заказ точно в оговоренное время. Композицию можно увидеть предварительно на фото через мессенджеры. В Санкт-Петербурге недорогие цветы с доставкой стало возможно заказать довольно давно, но и сейчас только единицы могут обеспечить по-настоящему качественный сервис, свежесть растений и демократичную политику ценообразования. Мы понимаем, насколько важно заказчику, чтобы адресат вовремя получил букет, который будет в полной мере соответствовать его представлениям об идеале, и сможет приносить радость, благоухая в вазе на протяжении многих дней, поэтому доставляем заказ точно в оговоренное время. Композицию можно увидеть предварительно на фото через мессенджеры. Мы понимаем, насколько важно заказчику, чтобы адресат вовремя получил букет, который будет в полной мере соответствовать его представлениям об идеале, и сможет приносить радость, благоухая в вазе на протяжении многих дней, поэтому доставляем заказ точно в оговоренное время. Композицию можно увидеть предварительно на фото через мессенджеры.</p>
+                        {!! $product->description !!}
                     </div>
                 </div>
                 <div class="col-md-5 product-reviews-block pl-5">
@@ -273,6 +277,26 @@
             if (input.is('input')) {
                 input[0][isNegative ? 'stepDown' : 'stepUp']()
             }
+        })
+
+        $('.button-wrapper .btn-buy').click(function() {
+            let id = $('.product-item').data('id')
+            let quantity = $('input[name="quantity"]').val();
+            let _token   = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url          : '/cart',
+                method       : 'POST',
+                dataType     : "json",
+                data : {
+                    id       : id,
+                    quantity : quantity,
+                    _token   : _token
+                },
+                success: function (data) {
+                    $('#cart .count').html(data.count)
+                }
+            })
         })
 
     </script>

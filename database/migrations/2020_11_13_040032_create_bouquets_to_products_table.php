@@ -13,7 +13,7 @@ class CreateBouquetsToProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bouquets_to_products', function (Blueprint $table) {
+        Schema::create('bouquet_product', function (Blueprint $table) {
             $table->id();
             $table->integer('bouquet_id');
             $table->integer('product_id');
@@ -29,6 +29,6 @@ class CreateBouquetsToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bouquets_to_products');
+        Schema::dropIfExists('bouquet_product');
     }
 }

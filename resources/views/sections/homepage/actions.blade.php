@@ -40,58 +40,27 @@
 
         <!-- Акционные букеты -->
         <div class="row product-list">
-            <div class="col">
+            @foreach ($data['actions'] as $action)
+            <div class="col-md-3 col-sm-12">
+                @php
+                    $composition = '';
+                    foreach ($action->products()->get() as $product) {
+                        $composition .= $product->title. ', ';
+                    }
+                @endphp
                 @include ('sections.products.item', [
-                     'background' => '/img/2.jpg',
-                     'title' => 'яблоневый сад',
-                     'price' => '1 799 Р',
-                     'type' => 'букет',
-                     'composition' => 'роза россия; гортензия (гидрангия); манус; рубус; матиола; фрезия',
-                     'href' => '#',
-                     'width' => '30 см',
-                     'height' => '45 см',
-                     'id' => '0000001'
-                 ])
-            </div>
-            <div class="col">
-                @include ('sections.products.item', [
-                    'background' => '/img/3.jpg',
-                    'title' => 'яблоневый сад',
-                    'price' => '1 799 Р',
+                    'background' => Voyager::image( $action->image ),
+                    'title' => $action->title,
+                    'price' => number_format($action->price, 0, '', ' ') . ' ₽',
                     'type' => 'букет',
-                    'composition' => 'роза россия; гортензия (гидрангия); манус; рубус; матиола; фрезия',
-                    'href' => '#',
-                    'width' => '30 см',
-                    'height' => '45 см',
-                    'id' => '0000001'
+                    'composition' => mb_substr($composition, 0, -2),
+                    'href' => '/product/' . $action->slug,
+                    'width' => $action->width . ' см',
+                    'height' => $action->height . ' см',
+                    'id' => $action->id
                 ])
             </div>
-            <div class="col">
-                @include ('sections.products.item', [
-                    'background' => '/img/1.jpg',
-                    'title' => 'яблоневый сад',
-                    'price' => '1 799 Р',
-                    'type' => 'букет',
-                    'composition' => 'роза россия; гортензия (гидрангия); манус; рубус; матиола; фрезия',
-                    'href' => '#',
-                    'width' => '30 см',
-                    'height' => '45 см',
-                    'id' => '0000001'
-                ])
-            </div>
-            <div class="col">
-                @include ('sections.products.item', [
-                    'background' => '/img/4.jpg',
-                    'title' => 'яблоневый сад',
-                    'price' => '1 799 Р',
-                    'type' => 'букет',
-                    'composition' => 'роза россия; гортензия (гидрангия); манус; рубус; матиола; фрезия',
-                    'href' => '#',
-                    'width' => '30 см',
-                    'height' => '45 см',
-                    'id' => '0000001'
-                ])
-            </div>
+            @endforeach
         </div>
         <div class="readmore">
             <a href="#" class="btn btn-default">Загрузить еще</a>

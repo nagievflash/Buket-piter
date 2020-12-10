@@ -18,10 +18,10 @@ class CreateBouquetsTable extends Migration
             $table->string('title');
             $table->string('sku')->unique();
             $table->string('slug')->unique();
-            $table->integer('collection_id')->nulled();
-            $table->string('size')->nulled();
-            $table->float('price')->nulled();
-            $table->string('description')->nulled();
+            $table->integer('collection_id')->nullable();
+            $table->string('size')->nullable();
+            $table->float('price')->nullable();
+            $table->longText('description')->nullable();
             $table->timestamps();
         });
     }

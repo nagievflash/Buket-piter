@@ -18,10 +18,12 @@
     <div class="product-content">
         <p class="product-type">{{ $type }}</p>
         <h3 class="product-title">{{ $title }}</h3>
-        <p class="product-composition">{{ $composition }}</p>
+        <p class="product-composition">
+            {{$composition}}
+            </p>
     </div>
     <div class="button-wrapper">
-        <span class="btn btn-buy">Купить</span>
+        <a href="{{$href}}"><span class="btn btn-buy">Купить</span></a>
         <span class="btn btn-primary btn-oneclick">Купить в один клик</span>
     </div>
 </div>
