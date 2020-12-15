@@ -17,11 +17,12 @@ Route::get('/', 'HomepageController@index')->name('home');
 Route::get('/product', 'ProductController@index')->name('product');
 Route::resource('cart', CartController::class);
 
-Route::get('/product/{slug}', 'BouquetController@index')->name('bouquet');
+Route::get('/product/{slug}', 'ProductController@index')->name('bouquet');
 
 Auth::routes();
 
 
 Route::group(['prefix' => 'admin'], function () {
+    Route::get('products/{id}/copy','VoyagerBouquetsController@copy')->name('product.copy');
     Voyager::routes();
 });

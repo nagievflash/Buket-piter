@@ -84,10 +84,9 @@
                             </div>
                             <div class="product-action">
                                 <div class="product-price-block d-flex w-100 align-items-center justify-content-between">
+
                                     <div class="product-sizes">
-                                        <span class="product-size active">Малый</span>
-                                        <span class="product-size">Средний</span>
-                                        <span class="product-size">Большой</span>
+                                        {!! $product->getCollectionList() !!}
                                     </div>
                                     <div class="product-price">
                                         {{number_format($product->price, 0, '', ' ')}} ₽

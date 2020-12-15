@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public $product;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($slug)
     {
-        return view('layouts.product.item');
+        $this->product = Product::where('slug', $slug)->firstOrFail();
+        return view('layouts.product.item')->with('product', $this->product);
     }
 
     /**

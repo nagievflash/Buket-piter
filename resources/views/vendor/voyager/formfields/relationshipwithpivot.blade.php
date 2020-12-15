@@ -61,7 +61,7 @@
         </div>
         @if(count($relationshipOptions) > 1)
             <a class="addEntry" style="cursor: pointer;" data-relationshipField="{{ $relationshipField }}" data-nbOfRelationshipOptions="{{ count($relationshipOptions) }}"><span class="voyager-plus">Добавить еще товар</span></a>
-            <a class="delEntry" style="cursor: pointer; display: none;" data-relationshipField="{{ $relationshipField }}" data-nbOfRelationshipOptions="{{ count($relationshipOptions) }}"><span class="voyager-trash">Удалить товар</span></a>
+            <a class="delEntry" style="cursor: pointer; display: block;" data-relationshipField="{{ $relationshipField }}" data-nbOfRelationshipOptions="{{ count($relationshipOptions) }}"><span class="voyager-trash">Удалить товар</span></a>
         @endif
     </div>
 @endforeach

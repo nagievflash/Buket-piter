@@ -4,10 +4,11 @@ namespace App;
 
 use Gloudemans\Shoppingcart\Contracts\Buyable;
 use Illuminate\Database\Eloquent\Model;
-
+use TCG\Voyager\Traits\Resizable;
+use App\Collection;
 class Product extends Model implements Buyable
 {
-
+    use Resizable;
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +28,10 @@ class Product extends Model implements Buyable
     public function categories()
     {
         return $this->belongsToMany('App\Category', 'category_product');
+    }
+
+    public function collection() {
+        return $this->belongsTo('App\Collection', 'collection_id');
     }
 
     public function scopeByCategoryName($query, $name) {
@@ -90,5 +95,20 @@ class Product extends Model implements Buyable
         $this->products()->sum(function ($product) {
             return $product['quantity'] * $product['price'];
         });
+    }
+
+    public function getCollectionList() {
+       $collection = $this->collection()->first()->get();
+       $id = $collection[0]->id;
+       $products = Product::where('collection_id', $id)->get();
+       $sizes = '';
+       foreach ($products as $item) {
+           $active = '';
+           if ($item->id == $this->id) $active = 'active';
+           $sizes .= "<a href=\"/product/$item->slug/\" class=\"product-size $active\">$item->size</a>";
+           //$sizes .= $item->title;
+       }
+
+       return $sizes;
     }
 }

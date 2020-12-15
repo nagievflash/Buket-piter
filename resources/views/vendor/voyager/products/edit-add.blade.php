@@ -1,6 +1,13 @@
 @php
-    $edit = !is_null($dataTypeContent->getKey());
-    $add  = is_null($dataTypeContent->getKey());
+    if (!isset($isCopy)) {
+        $edit = !is_null($dataTypeContent->getKey());
+        $add  = is_null($dataTypeContent->getKey());
+    }
+    else {
+        $edit = false;
+        $add = true;
+    }
+
 @endphp
 
 @extends('voyager::master')
@@ -34,136 +41,218 @@
 
             <!-- CSRF TOKEN -->
                 {{ csrf_field() }}
-            <div class="col-md-8">
+            <div class="col-md-12">
 
                 <div class="panel panel-bordered">
 
 
-                        <div class="panel-body">
+                    <div class="panel-body @if (count($errors) == 0) hidden @endif">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    <!-- Adding / Editing -->
+                        @php
+                            $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
+                            //$exclude = ['product_belongstomany_product_relationship', 'price', 'size', 'width', 'height'];
+                        @endphp
+                    </div><!-- panel-body -->
 
-                            @if (count($errors) > 0)
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                        <!-- Adding / Editing -->
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="#general">Товар</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#bouquet">Букет</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#seo">СЕО</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="general" class="tab-pane fade active in">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Товар
+                                </h3>
+                            </div>
+                            <div class="panel-body" style="display:flex; flex-wrap:wrap">
                             @php
                                 $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
-                                $exclude = ['product_belongstomany_product_relationship', 'price', 'size', 'width', 'height'];
+                                $exclude = ['product_belongstomany_product_relationship', 'overprice', 'size', 'width', 'height', 'product_belongsto_collection_relationship', 'seo_title', 'seo_description'];
+                                /*for ($i = 0; $i <= ($dataTypeRows->count() - 1); $i++) {
+                                    $dataTypeRows[$i]->field == 'image' || $dataTypeRows[$i]->field == 'images' ? $dataTypeRows->push( $dataTypeRows->splice($i,1)[0]) : 0;
+                                }*/
                             @endphp
 
                             @foreach($dataTypeRows as $row)
                                 @if(!in_array($row->field, $exclude))
-                                <!-- GET THE DISPLAY OPTIONS -->
-                                    @php
-                                        $display_options = $row->details->display ?? NULL;
-                                        if ($dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')}) {
+                                    <!-- GET THE DISPLAY OPTIONS -->
+                                        @php
+                                            $display_options = $row->details->display ?? NULL;
+                                            if ($dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')}) {
                                             $dataTypeContent->{$row->field} = $dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')};
-                                        }
-                                    @endphp
-                                    @if (isset($row->details->legend) && isset($row->details->legend->text))
-                                        <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
-                                    @endif
+                                            }
+                                        @endphp
+                                        @if (isset($row->details->legend) && isset($row->details->legend->text))
+                                            <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
+                                        @endif
 
-                                    <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
-                                        {{ $row->slugify }}
-                                        <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
-                                        @include('voyager::multilingual.input-hidden-bread-edit-add')
-                                        @if (isset($row->details->view))
-                                            @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'action' => ($edit ? 'edit' : 'add'), 'view' => ($edit ? 'edit' : 'add'), 'options' => $row->details])
-                                        @elseif ($row->type == 'relationship')
-                                            @if(isset($row->details->pivot_datas) && $row->details->pivot_datas != null)
-                                                @include('voyager::formfields.relationshipwithpivot', ['options' => $row->details])
+                                        <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 6 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                            {{ $row->slugify }}
+                                            <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
+                                            @include('voyager::multilingual.input-hidden-bread-edit-add')
+                                            @if (isset($row->details->view))
+                                                @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'action' => ($edit ? 'edit' : 'add'), 'view' => ($edit ? 'edit' : 'add'), 'options' => $row->details])
+                                            @elseif ($row->type == 'relationship')
+                                                @if(isset($row->details->pivot_datas) && $row->details->pivot_datas != null)
+                                                    @include('voyager::formfields.relationshipwithpivot', ['options' => $row->details])
+                                                @else
+                                                    @include('voyager::formfields.relationship', ['options' => $row->details])
+                                                @endif
                                             @else
-                                                @include('voyager::formfields.relationship', ['options' => $row->details])
+                                                {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
                                             @endif
-                                        @else
-                                            {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
-                                        @endif
 
-                                        @foreach (app('voyager')->afterFormFields($row, $dataType, $dataTypeContent) as $after)
-                                            {!! $after->handle($row, $dataType, $dataTypeContent) !!}
-                                        @endforeach
-                                        @if ($errors->has($row->field))
-                                            @foreach ($errors->get($row->field) as $error)
-                                                <span class="help-block">{{ $error }}</span>
+                                            @foreach (app('voyager')->afterFormFields($row, $dataType, $dataTypeContent) as $after)
+                                                {!! $after->handle($row, $dataType, $dataTypeContent) !!}
                                             @endforeach
+                                            @if ($errors->has($row->field))
+                                                @foreach ($errors->get($row->field) as $error)
+                                                    <span class="help-block">{{ $error }}</span>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        <div id="bouquet" class="tab-pane fade">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Букет
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                @php
+                                    $exclude = ['product_belongstomany_product_relationship', 'overprice', 'size', 'width', 'height', 'product_belongsto_collection_relationship'];
+                                @endphp
+                                @foreach($dataTypeRows as $row)
+                                    @if(in_array($row->field, $exclude))
+                                    <!-- GET THE DISPLAY OPTIONS -->
+                                        @php
+                                            $display_options = $row->details->display ?? NULL;
+                                            if ($dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')}) {
+                                            $dataTypeContent->{$row->field} = $dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')};
+                                            }
+                                        @endphp
+                                        @if (isset($row->details->legend) && isset($row->details->legend->text))
+                                            <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
                                         @endif
-                                    </div>
-                                @endif
-                            @endforeach
 
-                        </div><!-- panel-body -->
+                                        <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 6 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                            {{ $row->slugify }}
+                                            <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
+                                            @include('voyager::multilingual.input-hidden-bread-edit-add')
+                                            @if (isset($row->details->view))
+                                                @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'action' => ($edit ? 'edit' : 'add'), 'view' => ($edit ? 'edit' : 'add'), 'options' => $row->details])
+                                            @elseif ($row->type == 'relationship')
+                                                @if(isset($row->details->pivot_datas) && $row->details->pivot_datas != null)
+                                                    @include('voyager::formfields.relationshipwithpivot', ['options' => $row->details])
+                                                @else
+                                                    @include('voyager::formfields.relationship', ['options' => $row->details])
+                                                @endif
+                                            @else
+                                                {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
+                                            @endif
 
-                        <div class="panel-footer">
-                            @section('submit-buttons')
-                                <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
-                            @stop
-                            @yield('submit-buttons')
+                                            @foreach (app('voyager')->afterFormFields($row, $dataType, $dataTypeContent) as $after)
+                                                {!! $after->handle($row, $dataType, $dataTypeContent) !!}
+                                            @endforeach
+                                            @if ($errors->has($row->field))
+                                                @foreach ($errors->get($row->field) as $error)
+                                                    <span class="help-block">{{ $error }}</span>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endforeach
+
+                            </div>
                         </div>
+                        <div id="seo" class="tab-pane fade">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Сео-панель
+                                </h3>
+                                <div class="panel-body">
+                                @php
+                                    $exclude = ['seo_title', 'seo_description'];
+                                @endphp
+                                @foreach($dataTypeRows as $row)
+                                    @if(in_array($row->field, $exclude))
+                                        <!-- GET THE DISPLAY OPTIONS -->
+                                            @php
+                                                $display_options = $row->details->display ?? NULL;
+                                                if ($dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')}) {
+                                                $dataTypeContent->{$row->field} = $dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')};
+                                                }
+                                            @endphp
+                                            @if (isset($row->details->legend) && isset($row->details->legend->text))
+                                                <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
+                                            @endif
+
+                                            <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
+                                                {{ $row->slugify }}
+                                                <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
+                                                @include('voyager::multilingual.input-hidden-bread-edit-add')
+                                                @if (isset($row->details->view))
+                                                    @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'action' => ($edit ? 'edit' : 'add'), 'view' => ($edit ? 'edit' : 'add'), 'options' => $row->details])
+                                                @elseif ($row->type == 'relationship')
+                                                    @if(isset($row->details->pivot_datas) && $row->details->pivot_datas != null)
+                                                        @include('voyager::formfields.relationshipwithpivot', ['options' => $row->details])
+                                                    @else
+                                                        @include('voyager::formfields.relationship', ['options' => $row->details])
+                                                    @endif
+                                                @else
+                                                    {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
+                                                @endif
+
+                                                @foreach (app('voyager')->afterFormFields($row, $dataType, $dataTypeContent) as $after)
+                                                    {!! $after->handle($row, $dataType, $dataTypeContent) !!}
+                                                @endforeach
+                                                @if ($errors->has($row->field))
+                                                    @foreach ($errors->get($row->field) as $error)
+                                                        <span class="help-block">{{ $error }}</span>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        @endif
+                                    @endforeach
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
                 </div>
             </div>
 
 
-            <div class="col-md-4">
-                <!-- ### DETAILS ### -->
-                <div class="panel panel panel-bordered panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><i class="icon wb-clipboard"></i> Свойства букета</h3>
-                        <div class="panel-actions">
-                            <a class="panel-action voyager-angle-down" data-toggle="panel-collapse" aria-hidden="true"></a>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        @foreach($dataTypeRows as $row)
-                            @if($row->field == 'product_belongstomany_product_relationship')
-                        <div class="form-group">
-                            @include('voyager::formfields.relationshipwithpivot', ['options' => $row->details])
-                        </div>
-                            @endif
-                        @endforeach
-                        @foreach($dataTypeRows as $row)
-                            @if($row->field == 'price')
-                                <div class="form-group">
-                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
-                                    {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
-                                </div>
-                            @endif
-                            @if($row->field == 'size')
-                                <div class="form-group">
-                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
-                                    {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
-                                </div>
-                            @endif
-                            @if($row->field == 'width')
-                                <div class="form-group">
-                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
-                                    {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
-                                </div>
-                            @endif
-                            @if($row->field == 'height')
-                                <div class="form-group">
-                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
-                                    {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                    <div class="panel-footer">
-                        @section('submit-buttons')
-                            <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
-                        @stop
-                        @yield('submit-buttons')
-                    </div>
 
-                </div>
-            </div>
+    <div class="panel-footer">
+        @section('submit-buttons')
+            <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
+        @stop
+        @yield('submit-buttons')
+    </div>
             </form>
 
             <iframe id="form_target" name="form_target" style="display:none"></iframe>

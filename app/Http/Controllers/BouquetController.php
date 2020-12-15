@@ -13,4 +13,5 @@ class BouquetController extends Controller
         $this->product = Bouquet::where('slug', $slug)->firstOrFail();
         return view('layouts.product.item')->with('product', $this->product);
     }
+
 }

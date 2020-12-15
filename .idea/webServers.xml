@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="37c69d21-8a65-4978-9924-29a0ffa9c183" name="Buket Piter VPS" url="http://194.67.110.173">
+        <fileTransfer host="194.67.110.173" port="22" rootFolder="/var/www/www-root/data/www/194-67-110-173.cloudvps.regruhosting.ru" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions controlEncoding="utf-8" dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
