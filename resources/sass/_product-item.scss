@@ -4,6 +4,21 @@
         margin-bottom:40px;
     }
 }
+
+.product-price {
+    font-size: 26px;
+    font-weight: 600;
+    height: 52px;
+    width: 196px;
+    text-align: center;
+    background-image: url(/img/icons/price.svg);
+    background-size: 100% 52px;
+    background-position: right center;
+    color: #fff;
+    line-height: 52px;
+    padding-left: 23px;
+}
+
 .product {
     * {
         transition: .3s ease all;

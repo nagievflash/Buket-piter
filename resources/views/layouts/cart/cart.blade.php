@@ -139,7 +139,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row justify-content-end">
-                                    <a href="#" class="btn btn-primary">Оформить заказ</a>
+                                    <a href="/checkout/" class="btn btn-primary">Оформить заказ</a>
                                 </div>
                             </div>
                         </div>

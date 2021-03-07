@@ -18,6 +18,7 @@ Route::get('/product', 'ProductController@index')->name('product');
 Route::resource('cart', CartController::class);
 
 Route::get('/product/{slug}', 'ProductController@index')->name('bouquet');
+Route::get('/checkout/', 'CheckoutController@index')->name('checkout');
 
 Auth::routes();
 
